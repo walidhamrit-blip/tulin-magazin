@@ -1,28 +1,38 @@
-import { useEffect, useState } from "react";
-import { PRODUCTS, px } from "../data/catalog";
-import { WHATSAPP_NUMBER, formatPrice } from "../i18n";
+import { useEffect, useMemo, useState } from "react";
+import { px, type Product } from "../data/catalog";
+import { formatPrice } from "../i18n";
 import { useStore } from "../store";
 import { Stars } from "./Bits";
 import { IconArrow, IconBag, IconCheck, IconPin, IconShield, IconTruck, IconWhatsApp } from "./Icons";
 import Reveal from "./Reveal";
 
-const HERO_PRODUCT = PRODUCTS.find((p) => p.id === "TL-2001")!;
 const HERO_IMG_A = 6585763; // living room
 const HERO_IMG_B = 5974048; // tools
 const HERO_IMG_C = 36573009; // espresso
 
-const ROTATING = [HERO_PRODUCT, PRODUCTS.find((p) => p.id === "TL-4001")!, PRODUCTS.find((p) => p.id === "TL-1001")!];
 
 export default function Hero() {
-  const { t, lang, add, waLink } = useStore();
+  const { t, lang, add, waLink, products, site } = useStore();
   const [idx, setIdx] = useState(0);
+  const rotating = useMemo(() => {
+    const featuredIds = ["TL-2001", "TL-4001", "TL-1001"];
+    const picked = featuredIds
+      .map((id) => products.find((product) => product.id === id))
+      .filter((product): product is Product => Boolean(product));
+    return [...picked, ...products.filter((product) => !picked.some((item) => item.id === product.id))].slice(0, 3);
+  }, [products]);
 
   useEffect(() => {
-    const id = window.setInterval(() => setIdx((i) => (i + 1) % ROTATING.length), 4200);
+    if (rotating.length < 2) return;
+    const id = window.setInterval(() => setIdx((current) => (current + 1) % rotating.length), 4200);
     return () => window.clearInterval(id);
-  }, []);
+  }, [rotating.length]);
 
-  const featured = ROTATING[idx];
+  useEffect(() => {
+    if (idx >= rotating.length) setIdx(0);
+  }, [idx, rotating.length]);
+
+  const featured = rotating[idx];
 
   const stats = [
     { v: "+1,200", k: t("hero.stat1") },
@@ -60,7 +70,7 @@ export default function Hero() {
         aria-hidden
         className="pointer-events-none absolute -bottom-10 start-1/2 -translate-x-1/2 font-display text-[22vw] font-black leading-none tracking-tighter text-white/[0.035] select-none"
       >
-        {lang === "ar" ? "تولين" : "TOLIN"}
+        {site.brandName[lang]}
       </span>
 
       <div className="relative mx-auto grid max-w-[1440px] gap-10 px-4 pb-14 pt-12 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-10 lg:pb-20 lg:pt-16">
@@ -70,7 +80,7 @@ export default function Hero() {
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3.5 py-1.5 backdrop-blur">
               <IconPin className="h-4 w-4 text-sun" />
               <span className="font-display text-[11px] font-bold uppercase tracking-[0.2em] text-white/85">
-                {t("hero.kicker")} {lang === "ar" ? "تولين" : "TOLIN"}
+                {t("hero.kicker")} {site.brandName[lang]}
               </span>
             </span>
           </Reveal>
@@ -189,6 +199,7 @@ export default function Hero() {
             />
 
             {/* rotating product card */}
+            {featured && (
             <div className="absolute -bottom-6 start-2 w-[min(20rem,calc(100%-1rem))] rounded-2xl border border-white/12 bg-white p-3 text-ink shadow-[0_30px_60px_-24px_rgba(0,0,0,0.8)] sm:start-5">
               <div className="flex gap-3">
                 <img
@@ -224,7 +235,7 @@ export default function Hero() {
                 </div>
               </div>
               <div className="mt-2.5 flex gap-1">
-                {ROTATING.map((p, i) => (
+                {rotating.map((p, i) => (
                   <button
                     key={p.id}
                     type="button"
@@ -237,6 +248,7 @@ export default function Hero() {
                 ))}
               </div>
             </div>
+            )}
           </Reveal>
         </div>
       </div>
@@ -252,13 +264,13 @@ export default function Hero() {
             {lang === "ar" ? "المعرض مفتوح الآن — شارع الجمهورية، طرابلس" : "Showroom open now — Jumhuriya St, Tripoli"}
           </span>
           <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            href={`https://wa.me/${site.whatsapp}`}
             target="_blank"
             rel="noreferrer noopener"
             className="link-sweep inline-flex items-center gap-2 font-semibold text-white/80 hover:text-sun"
           >
             <IconWhatsApp className="h-4 w-4" />
-            <span className="tabular">+{WHATSAPP_NUMBER}</span>
+            <span className="tabular">{site.phone}</span>
           </a>
           <span className="hidden items-center gap-2 md:inline-flex">
             {t("hero.scroll")}

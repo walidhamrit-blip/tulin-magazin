@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { STORIES, px, type Bi } from "../data/catalog";
-import { WHATSAPP_NUMBER } from "../i18n";
 import { useStore } from "../store";
 import { SectionHead } from "./Bits";
 import { RailArrows, RailProgress, useRail } from "./Carousel";
@@ -14,7 +13,7 @@ const STEPS: Bi[] = [
 ];
 
 export default function Stories() {
-  const { t, lang } = useStore();
+  const { t, lang, site } = useStore();
   const rail = useRail();
   const [openId, setOpenId] = useState<string | null>(null);
   const story = STORIES.find((s) => s.id === openId) ?? null;
@@ -129,7 +128,7 @@ export default function Stories() {
                 ))}
               </ol>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
                   lang === "ar" ? `قرأت قصة «${story.title.ar}» ونبي تفاصيل أكثر.` : `I read "${story.title.en}" and would like more details.`,
                 )}`}
                 target="_blank"

@@ -1,11 +1,10 @@
-import { WHATSAPP_NUMBER } from "../i18n";
 import { useStore } from "../store";
 import { SectionHead } from "./Bits";
 import { IconChat, IconShip, IconShield, IconTag, IconTruck, IconWrench } from "./Icons";
 import Reveal from "./Reveal";
 
 export default function Services() {
-  const { t, lang } = useStore();
+  const { t, lang, site } = useStore();
 
   const items = [
     { icon: <IconShip className="h-6 w-6" />, t: t("srv1.t"), d: t("srv1.d") },
@@ -44,7 +43,7 @@ export default function Services() {
                 </div>
               </div>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
                   lang === "ar" ? "السلام عليكم، نبي نسأل على خدمات التوصيل والتركيب." : "Hello, I'd like to ask about delivery & installation.",
                 )}`}
                 target="_blank"

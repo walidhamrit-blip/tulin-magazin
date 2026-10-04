@@ -5,12 +5,12 @@ import { IconChevron, IconGlobe, IconStar } from "./Icons";
 
 /* ─────────────────────────── Logo ─────────────────────────── */
 export function Logo({ compact = false, onDark = false }: { compact?: boolean; onDark?: boolean }) {
-  const { lang, t } = useStore();
+  const { lang, site } = useStore();
   return (
     <a
       href="#top"
       className="group inline-flex items-center gap-2.5"
-      aria-label={t("brand.full")}
+      aria-label={site.brandName[lang]}
     >
       <span className="relative inline-flex items-center rounded-[7px] bg-ikea p-[3px] shadow-[0_2px_0_0_#003f77] transition-transform duration-300 group-hover:-rotate-2 group-hover:scale-105">
         <span className="inline-flex items-center rounded-[50%] bg-sun px-2.5 py-[5px] font-display text-[15px] font-black leading-none tracking-tight text-ikea-deep sm:px-3.5 sm:text-[19px]">
@@ -20,10 +20,10 @@ export function Logo({ compact = false, onDark = false }: { compact?: boolean; o
       {!compact && (
         <span className="flex flex-col leading-none">
           <span className={`font-display text-[11px] font-bold tracking-tight sm:text-[13px] ${onDark ? "text-white" : "text-ink"}`}>
-            {t("brand.full")}
+            {site.brandName[lang]}
           </span>
           <span className={`mt-0.5 text-[9px] font-medium uppercase tracking-[0.18em] sm:text-[10px] ${onDark ? "text-sun" : "text-ikea"}`}>
-            Tripoli · Libya
+            {lang === "ar" ? "طرابلس · ليبيا" : "Tripoli · Libya"}
           </span>
         </span>
       )}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { PRODUCTS, px } from "../data/catalog";
-import { WHATSAPP_NUMBER, formatPrice } from "../i18n";
+import { px } from "../data/catalog";
+import { formatPrice } from "../i18n";
 import { useStore } from "../store";
 import { IconArrow, IconBag, IconTag, IconWhatsApp } from "./Icons";
 import Reveal from "./Reveal";
@@ -32,11 +32,11 @@ function useCountdown(target: number) {
 }
 
 export default function Offers() {
-  const { t, lang, add, setCat } = useStore();
+  const { t, lang, add, setCat, products, site } = useStore();
   const target = useMemo(nextDeadline, []);
   const c = useCountdown(target);
 
-  const deals = PRODUCTS.filter((p) => p.old).slice(0, 6);
+  const deals = products.filter((p) => p.old).slice(0, 6);
   const pad = (n: number) => String(n).padStart(2, "0");
 
   const cells = [
@@ -156,7 +156,7 @@ export default function Offers() {
                 <IconArrow className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
               </button>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
                   lang === "ar"
                     ? "السلام عليكم، نبي نشترك في قائمة العروض الأسبوعية."
                     : "Hello, I'd like to join the weekly offers list.",
@@ -166,7 +166,7 @@ export default function Offers() {
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 px-5 py-3 font-display text-[13px] font-bold text-white transition-colors hover:border-sun hover:text-sun"
               >
                 <IconWhatsApp className="h-4.5 w-4.5" />
-                <span className="tabular">+{WHATSAPP_NUMBER}</span>
+                <span className="tabular">{site.phone}</span>
               </a>
             </div>
           </div>

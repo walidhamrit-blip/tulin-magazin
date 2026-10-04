@@ -1,23 +1,21 @@
 import { useState } from "react";
 import { FAQ_KEYS } from "../data/catalog";
-import { WHATSAPP_DISPLAY, WHATSAPP_NUMBER } from "../i18n";
 import { useStore } from "../store";
 import { SectionHead } from "./Bits";
 import { IconArrow, IconCheck, IconChevron, IconClock, IconPhone, IconPin, IconWhatsApp } from "./Icons";
 import Reveal from "./Reveal";
 
-const MAPS = "https://www.google.com/maps/dir/?api=1&destination=Jumhuriya%20Street%2C%20Tripoli%2C%20Libya";
 
 export default function Showroom() {
-  const { t, lang, waLink } = useStore();
+  const { t, lang, waLink, site } = useStore();
   const [openFaq, setOpenFaq] = useState<string | null>("faq1");
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
 
   const facts = [
-    { icon: <IconPin className="h-5 w-5" />, k: t("showroom.address"), v: t("showroom.addressVal") },
-    { icon: <IconClock className="h-5 w-5" />, k: t("showroom.hours"), v: t("showroom.hoursVal") },
-    { icon: <IconPhone className="h-5 w-5" />, k: t("showroom.phone"), v: `+${WHATSAPP_NUMBER}` },
+    { icon: <IconPin className="h-5 w-5" />, k: t("showroom.address"), v: site.address[lang] },
+    { icon: <IconClock className="h-5 w-5" />, k: t("showroom.hours"), v: site.hours[lang] },
+    { icon: <IconPhone className="h-5 w-5" />, k: t("showroom.phone"), v: site.phone },
   ];
 
   return (
@@ -51,7 +49,7 @@ export default function Showroom() {
             <Reveal delay={220}>
               <div className="mt-5 flex flex-wrap gap-2.5">
                 <a
-                  href={MAPS}
+                  href={site.mapUrl}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3.5 font-display text-[13.5px] font-bold text-white transition-colors hover:bg-ikea"
@@ -119,9 +117,9 @@ export default function Showroom() {
               <div className="absolute inset-x-4 bottom-4 flex flex-wrap items-end justify-between gap-3 sm:inset-x-6 sm:bottom-6">
                 <div className="max-w-sm rounded-2xl border border-white/60 bg-white/92 p-4 backdrop-blur">
                   <p className="font-display text-[11px] font-black uppercase tracking-[0.18em] text-ikea">TOLIN · Tripoli</p>
-                  <p className="mt-1.5 font-display text-[15px] font-bold leading-snug text-ink">{t("showroom.addressVal")}</p>
+                  <p className="mt-1.5 font-display text-[15px] font-bold leading-snug text-ink">{site.address[lang]}</p>
                   <a
-                    href={MAPS}
+                    href={site.mapUrl}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="mt-2.5 inline-flex items-center gap-1.5 font-display text-[12.5px] font-bold text-ikea hover:text-ikea-deep"
@@ -226,7 +224,7 @@ export default function Showroom() {
                 </form>
                 <p className="relative mt-4 flex items-center gap-2 text-[12px] font-semibold text-ink/70">
                   <IconWhatsApp className="h-4 w-4 text-leaf" />
-                  <span className="tabular">{WHATSAPP_DISPLAY}</span>
+                  <span className="tabular">{site.phone}</span>
                 </p>
               </div>
             </Reveal>

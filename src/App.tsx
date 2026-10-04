@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import AdminDashboard from "./components/AdminDashboard";
 import Catalog from "./components/Catalog";
 import CartDrawer from "./components/CartDrawer";
 import Departments from "./components/Departments";
@@ -49,7 +51,7 @@ function OriginStrip() {
   );
 }
 
-function Shell() {
+function Storefront() {
   return (
     <div className="relative min-h-screen">
       <div className="ambient" aria-hidden />
@@ -76,10 +78,20 @@ function Shell() {
   );
 }
 
+function RoutedApp() {
+  const [admin, setAdmin] = useState(() => window.location.hash === "#admin");
+  useEffect(() => {
+    const sync = () => setAdmin(window.location.hash === "#admin");
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+  return admin ? <AdminDashboard /> : <Storefront />;
+}
+
 export default function App() {
   return (
     <StoreProvider>
-      <Shell />
+      <RoutedApp />
     </StoreProvider>
   );
 }

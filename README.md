@@ -87,7 +87,17 @@ Un workflow **GitHub Actions** (`.github/workflows/ci.yml`) rejoue `npm install`
 
 ---
 
-## 🛠 Personnaliser le contenu
+## 🧑‍💼 Tableau d’administration
+
+Ouvrez **`/#admin`** (ou le lien **Administration** dans le pied de page) pour gérer le contenu sans modifier le code :
+
+- **Articles** : ajout, modification, suppression, prix, stock, photo Pexels, descriptions AR/EN et badges ;
+- **Catégories** : nom, accroche, image et couleur d’accent ;
+- **Entreprise & interface** : titre de l’onglet, marque, slogan, présentation, coordonnées, carte et réseaux sociaux.
+
+Les changements sont visibles immédiatement sur la vitrine et sont conservés dans le `localStorage` du navigateur. Cette première version est volontairement **sans backend ni authentification** : les données sont donc propres à l’appareil/navigateur de l’administrateur. Pour un tableau partagé entre plusieurs personnes, il faudra connecter les mêmes actions à une API et une base de données.
+
+## 🛠 Personnaliser le contenu dans le code
 
 | Ce que vous voulez changer | Fichier |
 | --- | --- |

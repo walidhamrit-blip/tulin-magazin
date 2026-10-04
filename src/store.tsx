@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { dictionaries, WHATSAPP_NUMBER, formatPrice, type Lang } from "./i18n";
-import { PRODUCTS, type Product } from "./data/catalog";
+import { dictionaries, formatPrice, type Lang } from "./i18n";
+import { CATEGORIES, PRODUCTS, type Category, type Product } from "./data/catalog";
+import { DEFAULT_SITE_INFO, copy, type SiteInfo, whatsappNumber } from "./data/site";
 
 export type CartLine = { id: string; qty: number };
 
@@ -32,6 +33,16 @@ type Store = {
   toast: string | null;
   notify: (msg: string) => void;
   waLink: (text: string) => string;
+  /** Editable data used by the customer-facing storefront. */
+  products: Product[];
+  categories: Category[];
+  site: SiteInfo;
+  saveProduct: (product: Product) => void;
+  deleteProduct: (id: string) => void;
+  saveCategory: (category: Category) => void;
+  deleteCategory: (id: string) => void;
+  updateSite: (site: SiteInfo) => void;
+  resetContent: () => void;
 };
 
 const Ctx = createContext<Store | null>(null);
@@ -49,6 +60,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => load<Lang>("tolin.lang", "ar"));
   const [cart, setCart] = useState<CartLine[]>(() => load<CartLine[]>("tolin.cart", []));
   const [favs, setFavs] = useState<string[]>(() => load<string[]>("tolin.favs", []));
+  const [products, setProducts] = useState<Product[]>(() => load<Product[]>("tolin.admin.products", copy(PRODUCTS)));
+  const [categories, setCategories] = useState<Category[]>(() => load<Category[]>("tolin.admin.categories", copy(CATEGORIES)));
+  const [site, setSite] = useState<SiteInfo>(() => load<SiteInfo>("tolin.admin.site", copy(DEFAULT_SITE_INFO)));
   const [cartOpen, setCartOpen] = useState(false);
   const [quick, setQuick] = useState<Product | null>(null);
   const [query, setQuery] = useState("");
@@ -65,7 +79,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem("tolin.lang", JSON.stringify(lang));
     } catch {
-      /* ignore */
+      /* Storage can be disabled by the browser. */
     }
   }, [lang, dir]);
 
@@ -84,6 +98,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       /* ignore */
     }
   }, [favs]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("tolin.admin.products", JSON.stringify(products));
+      localStorage.setItem("tolin.admin.categories", JSON.stringify(categories));
+      localStorage.setItem("tolin.admin.site", JSON.stringify(site));
+    } catch {
+      /* The shop still works if local storage is unavailable. */
+    }
+  }, [products, categories, site]);
+
+  useEffect(() => {
+    document.title = site.interfaceTitle[lang] || site.brandName[lang];
+  }, [site, lang]);
 
   useEffect(() => {
     document.body.style.overflow = cartOpen || quick ? "hidden" : "";
@@ -108,10 +136,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (found) return prev.map((l) => (l.id === id ? { ...l, qty: Math.min(99, l.qty + qty) } : l));
         return [...prev, { id, qty }];
       });
-      const p = PRODUCTS.find((x) => x.id === id);
+      const p = products.find((x) => x.id === id);
       if (p) setToast(`${dictionaries[lang]["cart.added"]} · ${p.name[lang]}`);
     },
-    [lang],
+    [lang, products],
   );
 
   const setQty = useCallback((id: string, qty: number) => {
@@ -127,20 +155,54 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const notify = useCallback((msg: string) => setToast(msg), []);
 
+  const saveProduct = useCallback((product: Product) => {
+    setProducts((prev) => (prev.some((p) => p.id === product.id) ? prev.map((p) => (p.id === product.id ? product : p)) : [product, ...prev]));
+    setQuick((current) => (current?.id === product.id ? product : current));
+  }, []);
+
+  const deleteProduct = useCallback((id: string) => {
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+    setCart((prev) => prev.filter((line) => line.id !== id));
+    setFavs((prev) => prev.filter((fav) => fav !== id));
+    setQuick((current) => (current?.id === id ? null : current));
+  }, []);
+
+  const saveCategory = useCallback((category: Category) => {
+    setCategories((prev) => (prev.some((c) => c.id === category.id) ? prev.map((c) => (c.id === category.id ? category : c)) : [...prev, category]));
+  }, []);
+
+  const deleteCategory = useCallback((id: string) => {
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+    setCat((current) => (current === id ? "all" : current));
+  }, []);
+
+  const updateSite = useCallback((next: SiteInfo) => {
+    setSite({ ...next, whatsapp: whatsappNumber(next.whatsapp) });
+  }, []);
+
+  const resetContent = useCallback(() => {
+    setProducts(copy(PRODUCTS));
+    setCategories(copy(CATEGORIES));
+    setSite(copy(DEFAULT_SITE_INFO));
+    setCat("all");
+    setQuery("");
+    setQuick(null);
+  }, []);
+
   const lines = useMemo(
     () =>
       cart
-        .map((l) => ({ product: PRODUCTS.find((p) => p.id === l.id)!, qty: l.qty }))
+        .map((l) => ({ product: products.find((p) => p.id === l.id)!, qty: l.qty }))
         .filter((l) => Boolean(l.product)),
-    [cart],
+    [cart, products],
   );
 
   const count = useMemo(() => cart.reduce((s, l) => s + l.qty, 0), [cart]);
   const subtotal = useMemo(() => lines.reduce((s, l) => s + l.product.price * l.qty, 0), [lines]);
 
   const waLink = useCallback(
-    (text: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`,
-    [],
+    (text: string) => `https://wa.me/${whatsappNumber(site.whatsapp)}?text=${encodeURIComponent(text)}`,
+    [site.whatsapp],
   );
 
   const value: Store = {
@@ -171,6 +233,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     toast,
     notify,
     waLink,
+    products,
+    categories,
+    site,
+    saveProduct,
+    deleteProduct,
+    saveCategory,
+    deleteCategory,
+    updateSite,
+    resetContent,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
@@ -192,20 +263,18 @@ export function buildOrderMessage(opts: {
   city: string;
   note: string;
   mode: "deliver" | "pickup";
+  whatsapp: string;
 }) {
-  const { lang, lines, subtotal, name, phone, city, note, mode } = opts;
+  const { lang, lines, subtotal, name, phone, city, note, mode, whatsapp } = opts;
   const orderNo = `TL-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
   const L = (a: string, b: string) => (lang === "ar" ? a : b);
 
   const rows = lines
-    .map(
-      (l) =>
-        `• ${l.product.id} — ${l.product.name[lang]} × ${l.qty} = ${formatPrice(l.product.price * l.qty, lang)}`,
-    )
+    .map((l) => `• ${l.product.id} — ${l.product.name[lang]} × ${l.qty} = ${formatPrice(l.product.price * l.qty, lang)}`)
     .join("\n");
 
   const text = [
-    L(`*طلب جديد من موقع تولين للبضائع الأروبية*`, `*New order from the TOLIN European Goods website*`),
+    L("*طلب جديد من موقع تولين للبضائع الأروبية*", "*New order from the TOLIN European Goods website*"),
     `${L("رقم الطلب", "Order no.")}: ${orderNo}`,
     `${L("التاريخ", "Date")}: ${new Date().toLocaleString(lang === "ar" ? "ar-LY-u-nu-latn" : "en-GB")}`,
     "",
@@ -229,6 +298,6 @@ export function buildOrderMessage(opts: {
   return {
     text,
     orderNo,
-    href: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`,
+    href: `https://wa.me/${whatsappNumber(whatsapp)}?text=${encodeURIComponent(text)}`,
   };
 }

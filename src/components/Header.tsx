@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { WHATSAPP_DISPLAY, WHATSAPP_NUMBER } from "../i18n";
+
 import { useStore } from "../store";
 import { LangSwitch, Logo } from "./Bits";
 import {
@@ -15,7 +15,7 @@ import {
   IconWhatsApp,
   IconX,
 } from "./Icons";
-import { CATEGORIES, PRODUCTS, px } from "../data/catalog";
+import { px } from "../data/catalog";
 
 const NAV = [
   { key: "nav.products", href: "#catalog" },
@@ -29,7 +29,7 @@ const NAV = [
 ];
 
 export default function Header() {
-  const { t, count, favs, setCartOpen, query, setQuery, lang, setCat } = useStore();
+  const { t, count, favs, setCartOpen, query, setQuery, lang, setCat, categories, products, site, waLink } = useStore();
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
   const [mobile, setMobile] = useState(false);
@@ -66,9 +66,9 @@ export default function Header() {
     return () => document.removeEventListener("keydown", onKey);
   }, [mobile, mega]);
 
-  const waGeneral = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  const waGeneral = waLink(
     lang === "ar" ? "السلام عليكم، عندي سؤال بخصوص منتجات تولين." : "Hello, I have a question about TOLIN products.",
-  )}`;
+  );
 
   return (
     <header id="top" className="sticky top-0 z-40">
@@ -87,11 +87,11 @@ export default function Header() {
           </div>
           <div className="flex items-center gap-1">
             <a
-              href={`tel:+${WHATSAPP_NUMBER}`}
+              href={`tel:${site.phone}`}
               className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-white/75 transition-colors hover:bg-white/10 hover:text-white"
             >
               <IconPhone className="h-3.5 w-3.5" />
-              <span className="tabular">{WHATSAPP_DISPLAY}</span>
+              <span className="tabular">{site.phone}</span>
             </a>
             <a
               href={waGeneral}
@@ -251,7 +251,7 @@ export default function Header() {
                     {lang === "ar" ? "كل الأقسام" : "All departments"}
                   </p>
                   <div className="grid gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
-                    {CATEGORIES.map((c) => (
+                    {categories.map((c) => (
                       <button
                         key={c.id}
                         type="button"
@@ -267,7 +267,7 @@ export default function Header() {
                         <span className="min-w-0 flex-1">
                           <span className="block truncate font-display text-[13px] font-bold text-ink">{c.name[lang]}</span>
                           <span className="mt-0.5 block text-[11px] text-ink-soft tabular">
-                            {PRODUCTS.filter((p) => p.cat === c.id).length} {t("cat.count")}
+                            {products.filter((p) => p.cat === c.id).length} {t("cat.count")}
                           </span>
                         </span>
                         <IconArrow className="h-4 w-4 shrink-0 text-ink-soft/35 transition-all duration-300 group-hover:translate-x-1 group-hover:text-ikea rtl:rotate-180 rtl:group-hover:-translate-x-1" />
@@ -299,7 +299,7 @@ export default function Header() {
                       </p>
                     </div>
                     <a
-                      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                      href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
                         lang === "ar"
                           ? "السلام عليكم، نبي نشوف منتجات شحنة ميلانو الجديدة."
                           : "Hello, I'd like to see the new Milan shipment.",
@@ -385,7 +385,7 @@ export default function Header() {
               className="flex items-center justify-center gap-2 rounded-full bg-leaf px-4 py-3 font-display text-[14px] font-bold text-white"
             >
               <IconWhatsApp className="h-5 w-5" />
-              <span className="tabular">{WHATSAPP_DISPLAY}</span>
+              <span className="tabular">{site.phone}</span>
             </a>
           </div>
         </div>

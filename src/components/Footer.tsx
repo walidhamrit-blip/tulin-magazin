@@ -1,5 +1,3 @@
-import { CATEGORIES } from "../data/catalog";
-import { WHATSAPP_DISPLAY, WHATSAPP_NUMBER } from "../i18n";
 import { useStore } from "../store";
 import { LangSwitch, Logo } from "./Bits";
 import {
@@ -14,7 +12,7 @@ import {
 } from "./Icons";
 
 export default function Footer() {
-  const { t, lang, setCat, setQuery, waLink } = useStore();
+  const { t, lang, setCat, setQuery, waLink, categories, site } = useStore();
 
   const goCat = (id: string) => {
     setCat(id);
@@ -28,7 +26,7 @@ export default function Footer() {
   const columns: { title: string; links: { label: string; onClick?: () => void; href?: string }[] }[] = [
     {
       title: t("footer.shop"),
-      links: CATEGORIES.slice(0, 6).map((c) => ({ label: c.name[lang], onClick: () => goCat(c.id) })),
+      links: categories.slice(0, 6).map((c) => ({ label: c.name[lang], onClick: () => goCat(c.id) })),
     },
     {
       title: t("footer.help"),
@@ -68,17 +66,17 @@ export default function Footer() {
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
             <Logo onDark />
-            <p className="mt-5 max-w-sm text-[13.5px] leading-relaxed text-white/55">{t("footer.aboutText")}</p>
+            <p className="mt-5 max-w-sm text-[13.5px] leading-relaxed text-white/55">{site.about[lang]}</p>
 
             <ul className="mt-6 space-y-2.5 text-[13px] text-white/65">
               <li className="flex items-start gap-2.5">
                 <IconPin className="mt-0.5 h-4 w-4 shrink-0 text-sun" />
-                {t("showroom.addressVal")}
+                {site.address[lang]}
               </li>
               <li>
-                <a href={`tel:+${WHATSAPP_NUMBER}`} className="flex items-center gap-2.5 transition-colors hover:text-sun">
+                <a href={`tel:${site.phone}`} className="flex items-center gap-2.5 transition-colors hover:text-sun">
                   <IconPhone className="h-4 w-4 shrink-0 text-sun" />
-                  <span className="tabular">{WHATSAPP_DISPLAY}</span>
+                  <span className="tabular">{site.phone}</span>
                 </a>
               </li>
               <li>
@@ -89,16 +87,16 @@ export default function Footer() {
                   className="flex items-center gap-2.5 transition-colors hover:text-sun"
                 >
                   <IconMail className="h-4 w-4 shrink-0 text-sun" />
-                  info@tolin-goods.ly
+                  {site.email}
                 </a>
               </li>
             </ul>
 
             <div className="mt-6 flex items-center gap-2">
               {[
-                { icon: <IconFacebook className="h-4.5 w-4.5" />, label: "Facebook", href: "https://facebook.com" },
-                { icon: <IconInstagram className="h-4.5 w-4.5" />, label: "Instagram", href: "https://instagram.com" },
-                { icon: <IconTiktok className="h-4.5 w-4.5" />, label: "TikTok", href: "https://tiktok.com" },
+                { icon: <IconFacebook className="h-4.5 w-4.5" />, label: "Facebook", href: site.facebook },
+                { icon: <IconInstagram className="h-4.5 w-4.5" />, label: "Instagram", href: site.instagram },
+                { icon: <IconTiktok className="h-4.5 w-4.5" />, label: "TikTok", href: site.tiktok },
                 {
                   icon: <IconWhatsApp className="h-4.5 w-4.5" />,
                   label: "WhatsApp",
@@ -157,6 +155,12 @@ export default function Footer() {
                 {lang === "ar" ? "الموقع يخدم ليبيا فقط — الأسعار بالدينار الليبي." : "This site serves Libya only — prices in Libyan Dinar."}
               </p>
             </div>
+            <a
+              href="#admin"
+              className="mb-2 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 font-display text-[12.5px] font-bold text-white/75 transition-colors hover:border-sun hover:text-sun"
+            >
+              Administration
+            </a>
             <button
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -170,7 +174,7 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-[12px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p className="tabular">
-            © {new Date().getFullYear()} {t("brand.full")}. {t("footer.rights")}
+            © {new Date().getFullYear()} {site.brandName[lang]}. {t("footer.rights")}
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {["footer.privacy", "footer.terms", "footer.cookies"].map((k) => (
