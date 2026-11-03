@@ -2,6 +2,7 @@ import { CATEGORIES } from "../data/catalog";
 import { WHATSAPP_DISPLAY, WHATSAPP_NUMBER } from "../i18n";
 import { useStore } from "../store";
 import { LangSwitch, Logo } from "./Bits";
+import NukhbaBadge from "./NukhbaBadge";
 import {
   IconArrow,
   IconFacebook,
@@ -187,6 +188,11 @@ export default function Footer() {
             <span>{t("footer.payNote")}</span>
           </div>
           <p className="text-white/60">{t("footer.made")}</p>
+        </div>
+
+        {/* Pied de page — badge « Website by Nukhba » (lien réel, variante claire sur fond sombre) */}
+        <div className="mt-8 flex justify-center">
+          <NukhbaBadge />
         </div>
       </div>
     </footer>

@@ -99,6 +99,7 @@ Un workflow **GitHub Actions** (`.github/workflows/ci.yml`) rejoue `npm install`
 | **Adresse, horaires, FAQ** | `src/i18n.ts` (`showroom.*`, `faq*`) + `src/components/Showroom.tsx` (lien Google Maps) |
 | **Couleurs & polices** | `src/index.css` → bloc `@theme` |
 | **Modèle du message de commande** | `src/store.tsx` → `buildOrderMessage()` |
+| **Badge « Website by Nukhba »** (pied de page) | `src/components/NukhbaBadge.tsx` — variante `nukhba-badge-light.svg` car le footer est sombre |
 
 ### Ajouter un produit
 

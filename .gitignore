@@ -1,0 +1,13 @@
+# Dependances
+node_modules/
+
+# Build
+dist/
+.vercel/
+
+# Logs & divers
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
