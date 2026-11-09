@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { dictionaries, WHATSAPP_NUMBER, formatPrice, type Lang } from "./i18n";
 import { PRODUCTS, type Product } from "./data/catalog";
+import { useScrollLock } from "./utils/scrollLock";
 
 export type CartLine = { id: string; qty: number };
 
@@ -85,12 +86,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [favs]);
 
-  useEffect(() => {
-    document.body.style.overflow = cartOpen || quick ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [cartOpen, quick]);
+  useScrollLock(cartOpen || Boolean(quick));
 
   useEffect(() => {
     if (!toast) return;

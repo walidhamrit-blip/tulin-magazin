@@ -9,7 +9,7 @@ export function Logo({ compact = false, onDark = false }: { compact?: boolean; o
   return (
     <a
       href="#top"
-      className="group inline-flex items-center gap-2.5"
+      className="group inline-flex min-w-0 shrink-0 items-center gap-2.5"
       aria-label={t("brand.full")}
     >
       <span className="relative inline-flex items-center rounded-[7px] bg-ikea p-[3px] shadow-[0_2px_0_0_#003f77] transition-transform duration-300 group-hover:-rotate-2 group-hover:scale-105">
@@ -18,7 +18,7 @@ export function Logo({ compact = false, onDark = false }: { compact?: boolean; o
         </span>
       </span>
       {!compact && (
-        <span className="flex flex-col leading-none">
+        <span className="hidden flex-col leading-none min-[430px]:flex">
           <span className={`font-display text-[11px] font-bold tracking-tight sm:text-[13px] ${onDark ? "text-white" : "text-ink"}`}>
             {t("brand.full")}
           </span>
@@ -86,7 +86,15 @@ export function SectionHead({
 }
 
 /* ─────────────────────── Language switch ─────────────────────── */
-export function LangSwitch({ dark = false }: { dark?: boolean }) {
+export function LangSwitch({
+  dark = false,
+  align = "end",
+  showName = false,
+}: {
+  dark?: boolean;
+  align?: "start" | "end";
+  showName?: boolean;
+}) {
   const { lang, setLang, t } = useStore();
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement | null>(null);
@@ -120,14 +128,14 @@ export function LangSwitch({ dark = false }: { dark?: boolean }) {
         }`}
       >
         <IconGlobe className="h-4 w-4" />
-        <span className="hidden sm:inline">{current.id === "ar" ? "العربية" : "English"}</span>
-        <span className={`hidden sm:inline ${dark ? "text-white/40" : "text-ink/30"}`}>|</span>
+        <span className={showName ? "inline" : "hidden sm:inline"}>{current.id === "ar" ? "العربية" : "English"}</span>
+        <span className={`${showName ? "inline" : "hidden sm:inline"} ${dark ? "text-white/40" : "text-ink/30"}`}>|</span>
         <span className={dark ? "text-white/70" : "text-ink-soft/70"}>LY</span>
         <IconChevron className={`h-3.5 w-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
 
       <div
-        className={`absolute end-0 top-[calc(100%+8px)] z-50 w-60 origin-top overflow-hidden rounded-xl border border-line bg-white p-1.5 shadow-[0_24px_60px_-12px_rgba(17,17,20,0.35)] transition-all duration-200 ${
+        className={`absolute ${align === "start" ? "start-0" : "end-0"} top-[calc(100%+8px)] z-50 w-60 max-w-[calc(100vw-2rem)] origin-top overflow-hidden rounded-xl border border-line bg-white p-1.5 shadow-[0_24px_60px_-12px_rgba(17,17,20,0.35)] transition-all duration-200 ${
           open ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
         }`}
       >

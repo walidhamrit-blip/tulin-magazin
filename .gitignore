@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# build output
+dist/
+dist-ssr/
+*.local
+
+# vercel
+.vercel/
+
+# tooling caches
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+.cache/
+.vite/
+coverage/
+
+# local env
+.env
+.env.*
+!.env.example
+
+# screenshots / QA artefacts
+screenshots/

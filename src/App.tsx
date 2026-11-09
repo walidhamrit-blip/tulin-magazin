@@ -51,7 +51,7 @@ function OriginStrip() {
 
 function Shell() {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-dvh">
       <div className="ambient" aria-hidden />
       <div className="relative z-10">
         <Header />

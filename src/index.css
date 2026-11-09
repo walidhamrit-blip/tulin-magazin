@@ -40,6 +40,30 @@
     transform: translateX(0);
   }
 }
+/* The row is anchored to the right edge in RTL, so it has to travel the
+   opposite way — translating -50% would push the whole strip off-screen. */
+@keyframes marquee-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+@keyframes marquee-rev-rtl {
+  from {
+    transform: translateX(50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+[dir="rtl"] .animate-marquee {
+  animation-name: marquee-rtl;
+}
+[dir="rtl"] .animate-marquee-rev {
+  animation-name: marquee-rev-rtl;
+}
 @keyframes float {
   0%,
   100% {
@@ -71,13 +95,100 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* clip instead of hidden so position: sticky keeps working on iOS */
+  overflow-x: clip;
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--color-mist);
   color: var(--color-ink);
-  overflow-x: hidden;
+  overflow-x: clip;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ---------- smartphone ergonomics ---------- */
+/* iOS zooms any input below 16px on focus — keep form fields at 16px. */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+    line-height: 1.35;
+  }
+}
+
+/* Notch / home-indicator aware helpers */
+.pt-safe {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.pb-safe-sm {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+.mb-safe-fab {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+/* Phone numbers must keep LTR digit order inside the RTL (Arabic) layout. */
+.num-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Floating buttons must never sit on top of a modal / drawer / menu. */
+html[data-scroll-locked] .floating-actions {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Horizontal rails: momentum + contained overscroll */
+.rail-x {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+  .rail-x {
+    scroll-padding-inline: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .rail-x {
+    scroll-padding-inline: 2.5rem;
+  }
+}
+
+/* Dynamic viewport heights for bottom sheets / full-screen menus */
+.h-dvh {
+  height: 100vh;
+  height: 100dvh;
+}
+.max-h-sheet {
+  max-height: 92vh;
+  max-height: 92dvh;
+}
+.max-h-menu {
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+
+/* Sticky header offset for in-page anchors on phones */
+@media (max-width: 767px) {
+  section[id],
+  header[id] {
+    scroll-margin-top: 4.5rem;
+  }
 }
 
 ::selection {

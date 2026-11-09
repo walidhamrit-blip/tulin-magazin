@@ -64,7 +64,7 @@ export default function Footer() {
         {lang === "ar" ? "أوروبا" : "EUROPE"}
       </span>
 
-      <div className="relative mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
+      <div className="relative mx-auto max-w-[1440px] px-4 pt-12 pb-8 sm:px-6 sm:pt-14 lg:px-10 lg:pt-20">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
             <Logo onDark />
@@ -78,7 +78,7 @@ export default function Footer() {
               <li>
                 <a href={`tel:+${WHATSAPP_NUMBER}`} className="flex items-center gap-2.5 transition-colors hover:text-sun">
                   <IconPhone className="h-4 w-4 shrink-0 text-sun" />
-                  <span className="tabular">{WHATSAPP_DISPLAY}</span>
+                  <span className="num-ltr">{WHATSAPP_DISPLAY}</span>
                 </a>
               </li>
               <li>
@@ -111,7 +111,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={s.label}
-                  className="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-sun hover:bg-sun hover:text-ink"
+                  className="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-sun hover:bg-sun hover:text-ink"
                 >
                   {s.icon}
                 </a>
@@ -119,40 +119,42 @@ export default function Footer() {
             </div>
           </div>
 
-          {columns.map((col) => (
-            <nav key={col.title} className="lg:col-span-2">
-              <h3 className="font-display text-[12px] font-black uppercase tracking-[0.18em] text-sun">{col.title}</h3>
-              <ul className="mt-4 space-y-2.5">
-                {col.links.map((l) => (
-                  <li key={l.label}>
-                    {l.href ? (
-                      <a
-                        href={l.href}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className="link-sweep inline-block text-[13.5px] text-white/60 transition-colors hover:text-white"
-                      >
-                        {l.label}
-                      </a>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={l.onClick}
-                        className="link-sweep inline-block text-start text-[13.5px] text-white/60 transition-colors hover:text-white"
-                      >
-                        {l.label}
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:col-span-6 lg:grid-cols-3 lg:gap-8">
+            {columns.map((col) => (
+              <nav key={col.title}>
+                <h3 className="font-display text-[12px] font-black uppercase tracking-[0.18em] text-sun">{col.title}</h3>
+                <ul className="mt-4 space-y-2.5">
+                  {col.links.map((l) => (
+                    <li key={l.label}>
+                      {l.href ? (
+                        <a
+                          href={l.href}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="link-sweep inline-block text-[13.5px] text-white/60 transition-colors hover:text-white"
+                        >
+                          {l.label}
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={l.onClick}
+                          className="link-sweep inline-block text-start text-[13.5px] text-white/60 transition-colors hover:text-white"
+                        >
+                          {l.label}
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
+          </div>
 
           <div className="lg:col-span-2">
             <h3 className="font-display text-[12px] font-black uppercase tracking-[0.18em] text-sun">{t("footer.lang")}</h3>
             <div className="mt-4 rounded-2xl border border-white/12 bg-white/[0.06] p-3">
-              <LangSwitch dark />
+              <LangSwitch dark showName />
               <p className="mt-2 px-1 text-[11.5px] leading-relaxed text-white/45">
                 {lang === "ar" ? "الموقع يخدم ليبيا فقط — الأسعار بالدينار الليبي." : "This site serves Libya only — prices in Libyan Dinar."}
               </p>
@@ -160,7 +162,7 @@ export default function Footer() {
             <button
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="group mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 font-display text-[12.5px] font-bold text-white/75 transition-colors hover:border-sun hover:text-sun"
+              className="group mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 font-display text-[12.5px] font-bold text-white/75 transition-colors hover:border-sun hover:text-sun"
             >
               <IconArrow className="h-4 w-4 -rotate-90 rtl:rotate-90 transition-transform group-hover:-translate-y-0.5" />
               {lang === "ar" ? "فوق" : "Back to top"}
@@ -168,7 +170,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-[12px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[12px] text-white/45 sm:mt-12 sm:flex-row sm:items-center sm:justify-between sm:pb-safe">
           <p className="tabular">
             © {new Date().getFullYear()} {t("brand.full")}. {t("footer.rights")}
           </p>

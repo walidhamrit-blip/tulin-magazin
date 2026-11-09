@@ -34,12 +34,12 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label={t("cart.title")}
-        className={`absolute inset-y-0 end-0 flex w-full max-w-[27rem] flex-col bg-mist shadow-[0_0_80px_rgba(0,0,0,0.45)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`absolute inset-y-0 end-0 flex h-dvh max-h-menu w-full flex-col bg-mist shadow-[0_0_80px_rgba(0,0,0,0.45)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:max-w-[27rem] ${
           cartOpen ? "translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full"
         }`}
       >
         {/* header */}
-        <div className="flex items-center justify-between gap-3 border-b border-line bg-white px-5 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-line bg-white px-4 pt-[max(0.9rem,env(safe-area-inset-top))] pb-3.5 sm:px-5 sm:py-4">
           <div className="flex items-center gap-3">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-ikea text-white">
               <IconBag className="h-5 w-5" />
@@ -55,14 +55,14 @@ export default function CartDrawer() {
             type="button"
             onClick={() => setCartOpen(false)}
             aria-label={t("close")}
-            className="grid h-9 w-9 place-items-center rounded-full transition-colors hover:bg-mist hover:text-brick"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-mist hover:text-brick"
           >
             <IconX className="h-5 w-5" />
           </button>
         </div>
 
         {sent ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 pb-safe text-center">
             <span className="grid h-16 w-16 animate-pop place-items-center rounded-full bg-leaf text-white">
               <IconCheck className="h-8 w-8" />
             </span>
@@ -90,7 +90,7 @@ export default function CartDrawer() {
             </button>
           </div>
         ) : lines.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 pb-safe text-center">
             <span className="relative grid h-20 w-20 place-items-center rounded-full bg-white text-ink-soft">
               <IconBag className="h-8 w-8" />
               <span className="absolute -bottom-1 -end-1 grid h-8 w-8 animate-float place-items-center rounded-full bg-sun text-[15px]">
@@ -114,7 +114,7 @@ export default function CartDrawer() {
         ) : (
           <>
             {/* lines */}
-            <div className="flex-1 overflow-y-auto px-4 py-4">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4">
               <ul className="space-y-3">
                 {lines.map(({ product: p, qty }) => (
                   <li key={p.id} className="group flex gap-3 rounded-2xl border border-line bg-white p-3">
@@ -122,7 +122,7 @@ export default function CartDrawer() {
                       src={px(p.img, 200, 200)}
                       alt={p.name[lang]}
                       loading="lazy"
-                      className="h-20 w-20 shrink-0 rounded-xl object-cover"
+                      className="h-16 w-16 shrink-0 rounded-xl object-cover min-[340px]:h-20 min-[340px]:w-20"
                     />
                     <div className="flex min-w-0 flex-1 flex-col">
                       <div className="flex items-start justify-between gap-2">
@@ -141,7 +141,7 @@ export default function CartDrawer() {
                           <IconTrash className="h-4 w-4" />
                         </button>
                       </div>
-                      <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+                      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 pt-2">
                         <div className="flex items-center gap-0.5 rounded-full border border-line bg-mist p-0.5">
                           <button
                             type="button"
@@ -161,7 +161,7 @@ export default function CartDrawer() {
                             <IconPlus className="h-3.5 w-3.5" />
                           </button>
                         </div>
-                        <span className="font-display text-[14.5px] font-black tabular">
+                        <span className="font-display text-[13.5px] font-black tabular min-[340px]:text-[14.5px]">
                           {formatPrice(p.price * qty, lang)}
                         </span>
                       </div>
@@ -182,11 +182,11 @@ export default function CartDrawer() {
                       key={m}
                       type="button"
                       onClick={() => setForm((f) => ({ ...f, mode: m }))}
-                      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-2 font-display text-[12px] font-bold transition-all duration-300 ${
+                      className={`inline-flex min-h-10 items-center justify-center gap-1 rounded-full px-2 py-2 font-display text-[11px] font-bold transition-all duration-300 min-[340px]:gap-1.5 min-[340px]:px-3 min-[340px]:text-[12px] ${
                         form.mode === m ? "bg-ikea text-white shadow" : "text-ink-soft hover:text-ikea"
                       }`}
                     >
-                      {m === "deliver" ? <IconTruck className="h-4 w-4" /> : null}
+                      {m === "deliver" ? <IconTruck className="hidden h-4 w-4 min-[340px]:block" /> : null}
                       {m === "deliver" ? t("cart.deliver") : t("cart.pickup")}
                     </button>
                   ))}
@@ -209,15 +209,19 @@ export default function CartDrawer() {
                           value={form[key]}
                           onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
                           placeholder={ph}
-                          className="w-full resize-none rounded-xl border border-line bg-mist px-3.5 py-2.5 text-[13px] outline-none transition-all placeholder:text-ink-soft/50 focus:border-ikea focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,88,163,0.12)]"
+                          autoComplete="off"
+                          className="w-full resize-none rounded-xl border border-line bg-mist px-3.5 py-2.5 text-[16px] outline-none transition-all placeholder:text-ink-soft/50 focus:border-ikea focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,88,163,0.12)] sm:text-[13px]"
                         />
                       ) : (
                         <input
                           type={key === "phone" ? "tel" : "text"}
+                          inputMode={key === "phone" ? "tel" : "text"}
+                          autoComplete={key === "name" ? "name" : key === "phone" ? "tel" : key === "city" ? "street-address" : "off"}
+                          enterKeyHint={key === "city" ? "done" : "next"}
                           value={form[key]}
                           onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
                           placeholder={ph}
-                          className="w-full rounded-xl border border-line bg-mist px-3.5 py-2.5 text-[13px] outline-none transition-all placeholder:text-ink-soft/50 focus:border-ikea focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,88,163,0.12)]"
+                          className="w-full rounded-xl border border-line bg-mist px-3.5 py-2.5 text-[16px] outline-none transition-all placeholder:text-ink-soft/50 focus:border-ikea focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,88,163,0.12)] sm:text-[13px]"
                         />
                       )}
                     </label>
@@ -227,7 +231,7 @@ export default function CartDrawer() {
             </div>
 
             {/* footer */}
-            <div className="border-t border-line bg-white px-5 py-4">
+            <div className="border-t border-line bg-white px-4 pt-4 pb-safe sm:px-5">
               <dl className="space-y-1.5 text-[13px]">
                 <div className="flex items-center justify-between">
                   <dt className="text-ink-soft">{t("cart.subtotal")}</dt>
@@ -249,7 +253,7 @@ export default function CartDrawer() {
               <button
                 type="button"
                 onClick={submit}
-                className="group mt-3 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-leaf px-5 py-4 font-display text-[15px] font-black text-white transition-all duration-300 hover:brightness-110 hover:shadow-[0_16px_36px_-16px_rgba(31,122,77,1)] active:scale-[0.98]"
+                className="group mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-leaf px-5 py-4 font-display text-[15px] font-black text-white transition-all duration-300 hover:brightness-110 hover:shadow-[0_16px_36px_-16px_rgba(31,122,77,1)] active:scale-[0.98]"
               >
                 <IconWhatsApp className="h-5.5 w-5.5 transition-transform duration-300 group-hover:scale-110" />
                 {t("cart.checkout")}

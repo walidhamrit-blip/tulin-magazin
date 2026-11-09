@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CATEGORIES, PRODUCTS, px, type Product } from "../data/catalog";
 import { WHATSAPP_NUMBER, formatPrice } from "../i18n";
 import { useStore } from "../store";
@@ -55,7 +55,7 @@ function ProductCard({ p, index }: { p: Product; index: number }) {
                 </span>
               )}
               {off > 0 && (
-                <span className="rounded-full bg-sun px-2.5 py-1 font-display text-[10px] font-black text-ink tabular">
+                <span dir="ltr" className="rounded-full bg-sun px-2.5 py-1 font-display text-[10px] font-black text-ink tabular">
                   −{off}%
                 </span>
               )}
@@ -64,7 +64,7 @@ function ProductCard({ p, index }: { p: Product; index: number }) {
               type="button"
               onClick={() => toggleFav(p.id)}
               aria-label={t("fav.title")}
-              className={`grid h-9 w-9 place-items-center rounded-full backdrop-blur transition-all duration-300 active:scale-90 ${
+              className={`grid h-10 w-10 place-items-center rounded-full backdrop-blur transition-all duration-300 active:scale-90 ${
                 favs.includes(p.id) ? "bg-brick text-white" : "bg-white/85 text-ink-soft hover:bg-white hover:text-brick"
               }`}
             >
@@ -75,7 +75,7 @@ function ProductCard({ p, index }: { p: Product; index: number }) {
           <button
             type="button"
             onClick={() => setQuick(p)}
-            className="absolute inset-x-3 bottom-3 translate-y-[130%] rounded-full bg-ink/90 py-2.5 font-display text-[12px] font-bold text-white opacity-0 backdrop-blur transition-all duration-400 group-hover:translate-y-0 group-hover:opacity-100"
+            className="absolute inset-x-3 bottom-3 rounded-full bg-ink/90 py-2.5 font-display text-[12px] font-bold text-white backdrop-blur transition-all duration-400 active:scale-[0.98] lg:translate-y-[130%] lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100"
           >
             {t("product.quick")}
           </button>
@@ -106,7 +106,7 @@ function ProductCard({ p, index }: { p: Product; index: number }) {
             </span>
           </div>
 
-          <div className="mt-auto flex items-end justify-between gap-2 pt-4">
+          <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-2 pt-4">
             <div className="flex flex-col">
               {p.old && (
                 <span className="text-[12px] text-ink-soft/60 line-through tabular">{formatPrice(p.old, lang)}</span>
@@ -136,6 +136,23 @@ function ProductCard({ p, index }: { p: Product; index: number }) {
 function QuickView() {
   const { quick, setQuick, t, lang, add, favs, toggleFav } = useStore();
   const [qty, setQty] = useState(1);
+  const productId = quick?.id;
+
+  useEffect(() => {
+    setQty(1);
+  }, [productId]);
+
+  // Phones have a hardware/browser back gesture, but Escape still backs out
+  // of the sheet on tablets with a keyboard and on desktop.
+  useEffect(() => {
+    if (!quick) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setQuick(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [quick, setQuick]);
+
   if (!quick) return null;
   const p = quick;
   const cat = CATEGORIES.find((c) => c.id === p.cat);
@@ -152,25 +169,31 @@ function QuickView() {
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center">
       <div className="absolute inset-0 bg-ink/65 backdrop-blur-sm" onClick={() => setQuick(null)} />
-      <div className="relative max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-[26px] bg-white shadow-2xl sm:rounded-[26px]">
+      <div className="relative flex max-h-sheet w-full max-w-4xl flex-col overflow-hidden rounded-t-[26px] bg-white shadow-2xl sm:flex-row sm:rounded-[26px]">
+        <span
+          aria-hidden
+          className="absolute start-1/2 top-2 z-20 h-1.5 w-12 -translate-x-1/2 rounded-full bg-line/90 sm:hidden"
+        />
         <button
           type="button"
           onClick={() => setQuick(null)}
           aria-label={t("close")}
-          className="absolute end-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-ink shadow transition-colors hover:bg-brick hover:text-white"
+          className="absolute end-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-ink shadow transition-colors hover:bg-brick hover:text-white"
         >
           <IconX className="h-4.5 w-4.5" />
         </button>
-        <div className="grid gap-0 sm:grid-cols-2">
-          <div className="relative aspect-square overflow-hidden bg-mist sm:rounded-s-[26px]">
-            <img src={px(p.img, 900, 900)} alt={p.name[lang]} className="h-full w-full object-cover" />
-            {p.badge && (
-              <span className={`absolute start-4 top-4 rounded-full px-3 py-1.5 font-display text-[11px] font-bold ${BADGES[p.badge].cls}`}>
-                {BADGES[p.badge][lang]}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-col p-5 sm:p-7">
+
+        <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-mist sm:aspect-auto sm:h-auto sm:w-1/2 sm:self-stretch sm:rounded-s-[26px]">
+          <img src={px(p.img, 900, 900)} alt={p.name[lang]} className="h-full w-full object-cover" />
+          {p.badge && (
+            <span className={`absolute start-4 top-4 rounded-full px-3 py-1.5 font-display text-[11px] font-bold ${BADGES[p.badge].cls}`}>
+              {BADGES[p.badge][lang]}
+            </span>
+          )}
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col sm:w-1/2">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5 sm:p-7">
             <span className="font-display text-[10.5px] font-bold uppercase tracking-[0.18em] text-ikea">
               {cat?.name[lang]} · {p.id}
             </span>
@@ -198,41 +221,24 @@ function QuickView() {
                 <span className="font-display text-[26px] font-black leading-none tabular">{formatPrice(p.price, lang)}</span>
               </div>
               <div className="ms-auto flex items-center gap-1 rounded-full border border-line bg-mist p-1">
-                <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} className="grid h-8 w-8 place-items-center rounded-full bg-white transition-colors hover:bg-ikea hover:text-white" aria-label="-">
+                <button
+                  type="button"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white transition-colors hover:bg-ikea hover:text-white"
+                  aria-label="-"
+                >
                   <IconMinus />
                 </button>
                 <span className="w-7 text-center font-display text-[14px] font-bold tabular">{qty}</span>
-                <button type="button" onClick={() => setQty((q) => Math.min(99, q + 1))} className="grid h-8 w-8 place-items-center rounded-full bg-white transition-colors hover:bg-ikea hover:text-white" aria-label="+">
+                <button
+                  type="button"
+                  onClick={() => setQty((q) => Math.min(99, q + 1))}
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white transition-colors hover:bg-ikea hover:text-white"
+                  aria-label="+"
+                >
                   <IconPlus />
                 </button>
               </div>
-            </div>
-
-            <div className="mt-5 grid gap-2 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => {
-                  add(p.id, qty);
-                  setQuick(null);
-                }}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-ikea px-5 py-3.5 font-display text-[14px] font-bold text-white transition-colors hover:bg-ikea-deep active:scale-95"
-              >
-                <IconBag className="h-5 w-5" />
-                {t("product.addToCart")}
-              </button>
-              <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                  lang === "ar"
-                    ? `السلام عليكم، نبي نسأل عن المنتج:\n${p.name.ar} (${p.id})\nالسعر المعروض: ${formatPrice(p.price, "ar")}`
-                    : `Hello, I'd like to ask about:\n${p.name.en} (${p.id})\nListed price: ${formatPrice(p.price, "en")}`,
-                )}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3.5 font-display text-[14px] font-bold text-white transition-colors hover:brightness-110 active:scale-95"
-              >
-                <IconWhatsApp className="h-5 w-5" />
-                {t("product.askWhatsapp")}
-              </a>
             </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-ink-soft">
@@ -251,6 +257,33 @@ function QuickView() {
                 {t("fav.title")}
               </button>
             </div>
+          </div>
+
+          <div className="grid shrink-0 gap-2 border-t border-line bg-white/95 px-4 py-3 pb-safe-sm backdrop-blur sm:grid-cols-2 sm:px-7 sm:pb-3">
+            <button
+              type="button"
+              onClick={() => {
+                add(p.id, qty);
+                setQuick(null);
+              }}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-ikea px-5 py-3.5 font-display text-[14px] font-bold text-white transition-colors hover:bg-ikea-deep active:scale-95"
+            >
+              <IconBag className="h-5 w-5" />
+              {t("product.addToCart")}
+            </button>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                lang === "ar"
+                  ? `السلام عليكم، نبي نسأل عن المنتج:\n${p.name.ar} (${p.id})\nالسعر المعروض: ${formatPrice(p.price, "ar")}`
+                  : `Hello, I'd like to ask about:\n${p.name.en} (${p.id})\nListed price: ${formatPrice(p.price, "en")}`,
+              )}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3.5 font-display text-[14px] font-bold text-white transition-colors hover:brightness-110 active:scale-95"
+            >
+              <IconWhatsApp className="h-5 w-5" />
+              {t("product.askWhatsapp")}
+            </a>
           </div>
         </div>
       </div>
@@ -287,7 +320,7 @@ export default function Catalog() {
           text={t("grid.text")}
           action={
             <div className="flex flex-wrap items-center gap-2">
-              <label className="flex items-center gap-2 rounded-full border border-line bg-mist px-3.5 py-2.5 focus-within:border-ikea">
+              <label className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-line bg-mist px-3.5 py-2.5 focus-within:border-ikea sm:flex-none">
                 <IconSearch className="h-4 w-4 text-ink-soft" />
                 <input
                   value={query}
@@ -296,7 +329,7 @@ export default function Catalog() {
                     setVisible(8);
                   }}
                   placeholder={t("search.placeholder")}
-                  className="w-44 bg-transparent text-[13px] outline-none placeholder:text-ink-soft/55 sm:w-56"
+                  className="w-full min-w-0 bg-transparent text-[13px] outline-none placeholder:text-ink-soft/55 sm:w-56"
                 />
                 {query && (
                   <button type="button" onClick={() => setQuery("")} className="text-ink-soft hover:text-brick" aria-label={t("close")}>
@@ -325,7 +358,7 @@ export default function Catalog() {
         />
 
         {/* category chips */}
-        <div className="no-bar -mx-4 mb-8 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+        <div className="no-bar rail-x -mx-4 mb-8 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
           {[{ id: "all", name: { ar: t("product.all"), en: t("product.all") } }, ...CATEGORIES].map((c) => {
             const active = cat === c.id;
             const n = c.id === "all" ? PRODUCTS.length : PRODUCTS.filter((p) => p.cat === c.id).length;
@@ -337,7 +370,7 @@ export default function Catalog() {
                   setCat(c.id);
                   setVisible(8);
                 }}
-                className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 font-display text-[12.5px] font-bold transition-all duration-300 active:scale-95 ${
+                className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 font-display text-[12.5px] font-bold transition-all duration-300 active:scale-95 ${
                   active
                     ? "border-ikea bg-ikea text-white shadow-[0_10px_22px_-14px_rgba(0,88,163,1)]"
                     : "border-line bg-white text-ink-soft hover:border-ikea/50 hover:text-ikea"

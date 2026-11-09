@@ -47,7 +47,7 @@ export default function Offers() {
   ];
 
   return (
-    <section id="offers" className="relative scroll-mt-24 overflow-hidden bg-ikea-deep py-16 text-white lg:py-24">
+    <section id="offers" className="relative scroll-mt-24 overflow-hidden bg-ikea-deep py-14 text-white sm:py-16 lg:py-24">
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
@@ -69,20 +69,22 @@ export default function Offers() {
           </Reveal>
 
           <Reveal delay={120}>
-            <div className="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur">
+            <div className="w-full rounded-2xl border border-white/20 bg-white/10 p-3.5 backdrop-blur sm:w-auto sm:p-4">
               <p className="mb-3 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-sun">
                 {t("offers.ends")}
               </p>
-              <div className="flex items-center gap-2">
+              <div className="grid w-full grid-cols-4 gap-1.5 sm:flex sm:w-auto sm:items-center sm:gap-2">
                 {cells.map((cell, i) => (
-                  <div key={cell.l} className="flex items-center gap-2">
-                    <div className="flex w-[62px] flex-col items-center rounded-xl bg-ink/60 py-2.5">
-                      <span key={cell.v} className="animate-pop font-display text-[26px] font-black leading-none tabular text-white">
+                  <div key={cell.l} className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+                    <div className="flex w-full flex-col items-center rounded-xl bg-ink/60 py-2.5 sm:w-[62px]">
+                      <span key={cell.v} className="animate-pop font-display text-[22px] font-black leading-none tabular text-white sm:text-[26px]">
                         {cell.v}
                       </span>
                       <span className="mt-1 text-[10px] uppercase tracking-wider text-white/50">{cell.l}</span>
                     </div>
-                    {i < cells.length - 1 && <span className="font-display text-[20px] font-black text-sun/70">:</span>}
+                    {i < cells.length - 1 && (
+                      <span className="hidden font-display text-[20px] font-black text-sun/70 sm:inline">:</span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -95,22 +97,22 @@ export default function Offers() {
             const off = Math.round((1 - p.price / (p.old ?? p.price)) * 100);
             return (
               <Reveal key={p.id} delay={i * 70}>
-                <article className="group flex h-full gap-4 overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.06] p-3 transition-all duration-400 hover:-translate-y-1 hover:border-sun/60 hover:bg-white/[0.11]">
-                  <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl sm:h-32 sm:w-32">
+                <article className="group flex h-full gap-3 overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.06] p-3 transition-all duration-400 hover:-translate-y-1 hover:border-sun/60 hover:bg-white/[0.11] sm:gap-4">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl min-[360px]:h-24 min-[360px]:w-24 sm:h-32 sm:w-32">
                     <img
                       src={px(p.img, 320, 320)}
                       alt={p.name[lang]}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <span className="absolute start-0 top-0 rounded-ee-xl bg-sun px-2 py-1 font-display text-[11px] font-black text-ink tabular">
+                    <span dir="ltr" className="absolute start-0 top-0 rounded-ee-xl bg-sun px-2 py-1 font-display text-[11px] font-black text-ink tabular">
                       −{off}%
                     </span>
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
                     <h3 className="font-display text-[14.5px] font-bold leading-snug">{p.name[lang]}</h3>
                     <p className="mt-1 line-clamp-2 text-[12px] leading-relaxed text-white/55">{p.desc[lang]}</p>
-                    <div className="mt-auto flex items-end justify-between gap-2 pt-3">
+                    <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-2 pt-3">
                       <div className="flex flex-col leading-none">
                         <span className="text-[11.5px] text-white/45 line-through tabular">{formatPrice(p.old ?? 0, lang)}</span>
                         <span className="mt-1 font-display text-[17px] font-black tabular text-sun">{formatPrice(p.price, lang)}</span>
@@ -143,14 +145,14 @@ export default function Offers() {
                   : "We send the new shipment list every week on WhatsApp."}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex w-full flex-col gap-2.5 min-[420px]:w-auto min-[420px]:flex-row min-[420px]:flex-wrap">
               <button
                 type="button"
                 onClick={() => {
                   setCat("all");
                   document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-display text-[13px] font-bold text-ink transition-colors hover:bg-sun"
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 font-display text-[13px] font-bold text-ink transition-colors hover:bg-sun"
               >
                 {t("cart.browse")}
                 <IconArrow className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
@@ -163,10 +165,10 @@ export default function Offers() {
                 )}`}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 px-5 py-3 font-display text-[13px] font-bold text-white transition-colors hover:border-sun hover:text-sun"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/30 px-5 py-3 font-display text-[13px] font-bold text-white transition-colors hover:border-sun hover:text-sun"
               >
                 <IconWhatsApp className="h-4.5 w-4.5" />
-                <span className="tabular">+{WHATSAPP_NUMBER}</span>
+                <span className="num-ltr">+{WHATSAPP_NUMBER}</span>
               </a>
             </div>
           </div>

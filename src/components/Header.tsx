@@ -16,6 +16,7 @@ import {
   IconX,
 } from "./Icons";
 import { CATEGORIES, PRODUCTS, px } from "../data/catalog";
+import { useScrollLock } from "../utils/scrollLock";
 
 const NAV = [
   { key: "nav.products", href: "#catalog" },
@@ -35,6 +36,9 @@ export default function Header() {
   const [mobile, setMobile] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mega, setMega] = useState(false);
+
+  // Keep the page still behind the full-screen mobile menu.
+  useScrollLock(mobile);
 
   const goCat = (id: string) => {
     setCat(id);
@@ -72,6 +76,8 @@ export default function Header() {
 
   return (
     <header id="top" className="sticky top-0 z-40">
+      {/* notch / status-bar clearance when launched as a standalone app */}
+      <div aria-hidden className="h-[env(safe-area-inset-top)] bg-white md:bg-ink" />
       {/* utility bar */}
       <div className="relative z-40 hidden bg-ink text-white md:block">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-6 py-2 text-[12px] lg:px-10">
@@ -91,7 +97,7 @@ export default function Header() {
               className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-white/75 transition-colors hover:bg-white/10 hover:text-white"
             >
               <IconPhone className="h-3.5 w-3.5" />
-              <span className="tabular">{WHATSAPP_DISPLAY}</span>
+              <span className="num-ltr">{WHATSAPP_DISPLAY}</span>
             </a>
             <a
               href={waGeneral}
@@ -114,11 +120,11 @@ export default function Header() {
           scrolled ? "border-line bg-white/95 shadow-[0_10px_30px_-18px_rgba(17,17,20,0.6)] backdrop-blur" : "border-transparent bg-white"
         }`}
       >
-        <div className="relative z-40 mx-auto flex max-w-[1440px] items-center gap-3 px-4 py-3 sm:px-6 lg:px-10">
+        <div className="relative z-40 mx-auto flex max-w-[1440px] items-center gap-1 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-10">
           <button
             type="button"
             onClick={() => setMobile(true)}
-            className="-ms-1 inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-mist lg:hidden"
+            className="-ms-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-mist lg:hidden"
             aria-label={t("nav.menu")}
           >
             <IconMenu />
@@ -151,7 +157,7 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="ms-auto flex items-center gap-1 lg:ms-0">
+          <div className="ms-auto flex shrink-0 items-center gap-0.5 sm:gap-1 lg:ms-0">
             {/* desktop search */}
             <form
               onSubmit={(e) => {
@@ -191,7 +197,7 @@ export default function Header() {
 
             <a
               href="#catalog"
-              className="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-mist"
+              className="relative hidden h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-mist min-[360px]:inline-flex"
               aria-label={t("fav.title")}
             >
               <IconHeart className="h-5 w-5" filled={favs.length > 0} />
@@ -205,7 +211,8 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className="group relative ms-1 inline-flex items-center gap-2 rounded-full bg-ikea px-4 py-2.5 font-display text-[13px] font-bold text-white transition-all duration-300 hover:bg-ikea-deep hover:shadow-[0_10px_24px_-10px_rgba(0,88,163,0.9)] active:scale-95"
+              aria-label={`${t("cart.title")} (${count})`}
+              className="group relative ms-0.5 inline-flex h-10 items-center gap-1.5 rounded-full bg-ikea px-2.5 font-display text-[13px] font-bold text-white transition-all duration-300 hover:bg-ikea-deep hover:shadow-[0_10px_24px_-10px_rgba(0,88,163,0.9)] active:scale-95 sm:h-auto sm:gap-2 sm:px-4 sm:py-2.5"
             >
               <IconBag className="h-5 w-5 transition-transform duration-300 group-hover:-rotate-6" />
               <span className="hidden sm:inline">{t("cart.button")}</span>
@@ -225,7 +232,7 @@ export default function Header() {
             searchOpen ? "max-h-24 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <label className="mx-4 my-3 flex items-center gap-2 rounded-full border border-line bg-mist px-3.5 py-2.5 focus-within:border-ikea sm:mx-6">
+          <label className="mx-3 my-3 flex items-center gap-2 rounded-full border border-line bg-mist px-3.5 py-2.5 focus-within:border-ikea sm:mx-6">
             <IconSearch className="h-4 w-4 text-ink-soft" />
             <input
               value={query}
@@ -336,7 +343,7 @@ export default function Header() {
       </div>
 
       {/* mobile menu */}
-      <div className={`fixed inset-0 z-50 lg:hidden ${mobile ? "" : "pointer-events-none"}`}>
+      <div className={`fixed inset-0 z-50 lg:hidden ${mobile ? "" : "pointer-events-none"}`} aria-hidden={!mobile}>
         <div
           onClick={() => setMobile(false)}
           className={`absolute inset-0 bg-ink/55 backdrop-blur-sm transition-opacity duration-300 ${
@@ -344,52 +351,126 @@ export default function Header() {
           }`}
         />
         <div
-          className={`absolute inset-y-0 start-0 flex w-[86%] max-w-sm flex-col bg-white transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("nav.menu")}
+          className={`absolute inset-y-0 start-0 flex h-dvh max-h-menu w-[min(88vw,20rem)] flex-col bg-white shadow-[0_0_70px_rgba(0,0,0,0.35)] transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             mobile ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full"
           }`}
         >
-          <div className="flex items-center justify-between border-b border-line px-5 py-4">
-            <Logo />
+          <div className="flex items-center justify-between gap-3 border-b border-line px-4 pt-safe pb-3">
+            <Logo compact />
             <button
               type="button"
               onClick={() => setMobile(false)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full hover:bg-mist"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-mist"
               aria-label={t("close")}
             >
               <IconX />
             </button>
           </div>
-          <nav className="flex-1 overflow-y-auto px-3 py-4">
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setMobile(false);
+              setMega(false);
+              window.setTimeout(
+                () => document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                120,
+              );
+            }}
+            className="border-b border-line px-4 py-3"
+          >
+            <label className="flex items-center gap-2 rounded-full border border-line bg-mist px-3.5 py-2.5 focus-within:border-ikea">
+              <IconSearch className="h-4 w-4 shrink-0 text-ink-soft" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={lang === "ar" ? "ابحث في الكتالوج…" : "Search the catalogue…"}
+                aria-label={t("search.placeholder")}
+                className="w-full min-w-0 bg-transparent text-[16px] outline-none placeholder:text-ink-soft/55"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-ink-soft hover:text-brick"
+                  aria-label={t("close")}
+                >
+                  <IconX className="h-4 w-4" />
+                </button>
+              )}
+            </label>
+          </form>
+
+          <nav className="flex-1 overflow-y-auto overscroll-contain px-2 py-3">
             {NAV.map((n, i) => (
               <a
                 key={n.key + i}
                 href={n.href}
                 onClick={() => setMobile(false)}
-                className="flex items-center justify-between border-b border-line/70 px-3 py-4 font-display text-[16px] font-bold text-ink transition-colors hover:text-ikea"
+                className="flex min-h-12 items-center justify-between gap-3 border-b border-line/70 px-3 py-3.5 font-display text-[16px] font-bold text-ink transition-colors hover:text-ikea"
               >
                 {t(n.key)}
                 <span className="text-[11px] font-medium text-ink-soft/50 tabular">0{i + 1}</span>
               </a>
             ))}
-          </nav>
-          <div className="space-y-3 border-t border-line bg-mist px-5 py-5">
-            <LangSwitch />
-            <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-              <IconPin className="h-4 w-4 text-ikea" />
-              {t("top.location")}
+
+            <p className="mt-5 px-3 font-display text-[10.5px] font-black uppercase tracking-[0.2em] text-ink-soft/60">
+              {lang === "ar" ? "تسوّق حسب القسم" : "Shop by department"}
+            </p>
+            <div className="no-bar rail-x -mx-2 mt-2.5 flex gap-2 overflow-x-auto px-2 pb-1">
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => {
+                    setMobile(false);
+                    goCat(c.id);
+                  }}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-full border border-line bg-mist px-3.5 py-2 font-display text-[12.5px] font-bold text-ink-soft transition-colors active:scale-95"
+                >
+                  <img src={px(c.img, 64, 64)} alt="" loading="lazy" className="h-5 w-5 rounded-full object-cover" />
+                  {c.name[lang]}
+                </button>
+              ))}
             </div>
-            <a
-              href={waGeneral}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="flex items-center justify-center gap-2 rounded-full bg-leaf px-4 py-3 font-display text-[14px] font-bold text-white"
-            >
-              <IconWhatsApp className="h-5 w-5" />
-              <span className="tabular">{WHATSAPP_DISPLAY}</span>
-            </a>
+          </nav>
+
+          <div className="space-y-3 border-t border-line bg-mist px-4 pt-4 pb-safe">
+            <div className="flex items-center justify-between gap-2">
+              <div className="relative">
+                <LangSwitch align="start" showName />
+              </div>
+              <span className="flex min-w-0 items-center gap-1.5 text-[12px] text-ink-soft">
+                <IconPin className="h-4 w-4 shrink-0 text-ikea" />
+                {t("top.location")}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href={`tel:+${WHATSAPP_NUMBER}`}
+                className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-ink/15 bg-white px-3 py-3 font-display text-[13px] font-bold text-ink"
+              >
+                <IconPhone className="h-4 w-4 text-ikea" />
+                {lang === "ar" ? "اتصل" : "Call"}
+              </a>
+              <a
+                href={waGeneral}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-leaf px-3 py-3 font-display text-[13px] font-bold text-white"
+              >
+                <IconWhatsApp className="h-5 w-5" />
+                {lang === "ar" ? "واتساب" : "WhatsApp"}
+              </a>
+            </div>
+            <p className="num-ltr text-center text-[11px] text-ink-soft/70">{WHATSAPP_DISPLAY}</p>
           </div>
         </div>
       </div>
+
     </header>
   );
 }

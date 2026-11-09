@@ -16,13 +16,13 @@ export default function Departments() {
   const span = ["md:col-span-2 md:row-span-2", "md:col-span-2", "", "", "", "", "", ""];
 
   return (
-    <section id="departments" className="relative mx-auto max-w-[1440px] scroll-mt-24 px-4 py-16 sm:px-6 lg:px-10 lg:py-24">
+    <section id="departments" className="relative mx-auto max-w-[1440px] scroll-mt-24 px-4 py-14 sm:px-6 sm:py-16 lg:px-10 lg:py-24">
       <SectionHead
         kicker={lang === "ar" ? "الأقسام" : "Departments"}
         title={t("cat.title")}
         text={t("cat.text")}
         action={
-          <div className="flex items-center gap-3 rounded-2xl border border-line bg-white px-4 py-3">
+          <div className="flex w-full items-center gap-3 rounded-2xl border border-line bg-white px-4 py-3 sm:w-auto">
             <span className="font-display text-[26px] font-black leading-none text-ikea tabular">{PRODUCTS.length}</span>
             <span className="text-[12px] leading-tight text-ink-soft">
               {lang === "ar" ? "منتج متوفر الآن في مخزن طرابلس" : "products in stock at the Tripoli warehouse"}
@@ -31,7 +31,7 @@ export default function Departments() {
         }
       />
 
-      <div className="grid auto-rows-[minmax(190px,auto)] grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
+      <div className="grid auto-rows-[minmax(168px,auto)] grid-cols-1 gap-3 sm:auto-rows-[minmax(190px,auto)] sm:grid-cols-2 md:grid-cols-4">
         {CATEGORIES.map((c, i) => {
           const count = PRODUCTS.filter((p) => p.cat === c.id).length;
           const big = span[i] === "md:col-span-2 md:row-span-2";
