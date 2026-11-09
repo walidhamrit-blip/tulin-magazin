@@ -21,7 +21,7 @@ export default function Showroom() {
   ];
 
   return (
-    <section id="showroom" className="relative scroll-mt-24 py-16 lg:py-24">
+    <section id="showroom" className="relative scroll-mt-24 py-14 sm:py-16 lg:py-24">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
           {/* copy + facts */}
@@ -42,19 +42,19 @@ export default function Showroom() {
                       <span className="block font-display text-[10.5px] font-bold uppercase tracking-[0.18em] text-ink-soft/60">
                         {f.k}
                       </span>
-                      <span className="mt-1 block text-[14px] font-semibold leading-relaxed text-ink tabular">{f.v}</span>
+                      <span className="mt-1 block text-[14px] font-semibold leading-relaxed text-ink num-ltr">{f.v}</span>
                     </span>
                   </div>
                 </Reveal>
               ))}
             </ul>
             <Reveal delay={220}>
-              <div className="mt-5 flex flex-wrap gap-2.5">
+              <div className="mt-5 flex flex-col gap-2.5 min-[420px]:flex-row min-[420px]:flex-wrap">
                 <a
                   href={MAPS}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3.5 font-display text-[13.5px] font-bold text-white transition-colors hover:bg-ikea"
+                  className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-ink px-5 py-3.5 font-display text-[13.5px] font-bold text-white transition-colors hover:bg-ikea"
                 >
                   <IconPin className="h-4.5 w-4.5" />
                   {t("showroom.call")}
@@ -68,7 +68,7 @@ export default function Showroom() {
                   )}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-3.5 font-display text-[13.5px] font-bold text-white transition-transform hover:scale-[1.02] active:scale-95"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-leaf px-5 py-3.5 font-display text-[13.5px] font-bold text-white transition-transform hover:scale-[1.02] active:scale-95"
                 >
                   <IconWhatsApp className="h-4.5 w-4.5" />
                   {t("showroom.wa")}
@@ -79,7 +79,7 @@ export default function Showroom() {
 
           {/* stylised map */}
           <Reveal delay={120} className="lg:col-span-7">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[26px] border border-line bg-ikea-soft sm:aspect-[16/11]">
+            <div className="relative aspect-[4/3.4] overflow-hidden rounded-[22px] border border-line bg-ikea-soft sm:aspect-[16/11] sm:rounded-[26px]">
               <img
                 src="https://images.pexels.com/photos/21999720/pexels-photo-21999720.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1000"
                 alt={lang === "ar" ? "وسط مدينة طرابلس قرب البحر" : "Tripoli city centre by the sea"}
@@ -116,8 +116,8 @@ export default function Showroom() {
                 <span className="absolute start-1/2 top-6 h-6 w-px -translate-x-1/2 bg-ikea/50" />
               </div>
 
-              <div className="absolute inset-x-4 bottom-4 flex flex-wrap items-end justify-between gap-3 sm:inset-x-6 sm:bottom-6">
-                <div className="max-w-sm rounded-2xl border border-white/60 bg-white/92 p-4 backdrop-blur">
+              <div className="absolute inset-x-3 bottom-3 flex flex-wrap items-end justify-between gap-3 sm:inset-x-6 sm:bottom-6">
+                <div className="w-full max-w-sm rounded-2xl border border-white/60 bg-white/92 p-3 backdrop-blur min-[420px]:w-auto sm:p-4">
                   <p className="font-display text-[11px] font-black uppercase tracking-[0.18em] text-ikea">TOLIN · Tripoli</p>
                   <p className="mt-1.5 font-display text-[15px] font-bold leading-snug text-ink">{t("showroom.addressVal")}</p>
                   <a
@@ -130,7 +130,7 @@ export default function Showroom() {
                     <IconArrow className="h-3.5 w-3.5 rtl:rotate-180" />
                   </a>
                 </div>
-                <div className="rounded-2xl bg-ink px-4 py-3 text-white">
+                <div className="hidden rounded-2xl bg-ink px-4 py-3 text-white sm:block">
                   <p className="text-[10.5px] uppercase tracking-[0.18em] text-white/50">{lang === "ar" ? "اليوم" : "Today"}</p>
                   <p className="mt-1 font-display text-[15px] font-black tabular text-sun">
                     {new Date().toLocaleTimeString(lang === "ar" ? "ar-LY-u-nu-latn" : "en-GB", {
@@ -145,7 +145,7 @@ export default function Showroom() {
         </div>
 
         {/* FAQ + newsletter */}
-        <div className="mt-16 grid gap-10 lg:mt-24 lg:grid-cols-12 lg:gap-12">
+        <div className="mt-12 grid gap-10 sm:mt-16 lg:mt-24 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
             <SectionHead kicker={lang === "ar" ? "مساعدة" : "Help"} title={t("faq.title")} />
             <div className="divide-y divide-line overflow-hidden rounded-[22px] border border-line bg-white">
@@ -157,11 +157,11 @@ export default function Showroom() {
                       type="button"
                       onClick={() => setOpenFaq(open ? null : k)}
                       aria-expanded={open}
-                      className="flex w-full items-center justify-between gap-4 px-5 py-5 text-start transition-colors hover:bg-mist"
+                      className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-4 text-start transition-colors hover:bg-mist sm:gap-4 sm:px-5 sm:py-5"
                     >
-                      <span className="flex items-center gap-4">
+                      <span className="flex min-w-0 items-center gap-2.5 sm:gap-4">
                         <span className="font-display text-[11px] font-black tabular text-ikea">0{i + 1}</span>
-                        <span className="font-display text-[15px] font-bold text-ink">{t(`${k}.q`)}</span>
+                        <span className="font-display text-[14px] font-bold leading-snug text-ink sm:text-[15px]">{t(`${k}.q`)}</span>
                       </span>
                       <span
                         className={`grid h-8 w-8 shrink-0 place-items-center rounded-full transition-all duration-300 ${
@@ -186,7 +186,7 @@ export default function Showroom() {
 
           <div className="lg:col-span-5">
             <Reveal>
-              <div className="relative overflow-hidden rounded-[26px] bg-sun p-6 sm:p-8">
+              <div className="relative overflow-hidden rounded-[22px] bg-sun p-5 min-[420px]:p-6 sm:rounded-[26px] sm:p-8">
                 <span
                   aria-hidden
                   className="pointer-events-none absolute -end-8 -top-10 font-display text-[9rem] font-black leading-none text-ink/[0.07]"
@@ -210,14 +210,17 @@ export default function Showroom() {
                   <div className="flex flex-col gap-2 sm:flex-row">
                     <input
                       type="text"
+                      inputMode="email"
+                      autoComplete="email"
+                      enterKeyHint="send"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t("newsletter.ph")}
-                      className="w-full rounded-full border border-ink/15 bg-white px-4 py-3 text-[13.5px] outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(0,88,163,0.25)]"
+                      className="w-full min-w-0 rounded-full border border-ink/15 bg-white px-4 py-3 text-[16px] outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(0,88,163,0.25)] sm:text-[13.5px]"
                     />
                     <button
                       type="submit"
-                      className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 font-display text-[13.5px] font-bold text-white transition-transform hover:scale-[1.03] active:scale-95"
+                      className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 font-display text-[13.5px] font-bold text-white transition-transform hover:scale-[1.03] active:scale-95"
                     >
                       {done ? <IconCheck className="h-4 w-4 text-sun" /> : null}
                       {done ? t("newsletter.done") : t("newsletter.cta")}
@@ -226,21 +229,21 @@ export default function Showroom() {
                 </form>
                 <p className="relative mt-4 flex items-center gap-2 text-[12px] font-semibold text-ink/70">
                   <IconWhatsApp className="h-4 w-4 text-leaf" />
-                  <span className="tabular">{WHATSAPP_DISPLAY}</span>
+                  <span className="num-ltr">{WHATSAPP_DISPLAY}</span>
                 </p>
               </div>
             </Reveal>
 
             <Reveal delay={120}>
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                <div className="rounded-[22px] border border-line bg-white p-5">
-                  <p className="font-display text-[34px] font-black leading-none text-ikea tabular">24h</p>
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="rounded-[22px] border border-line bg-white p-4 sm:p-5">
+                  <p className="font-display text-[30px] font-black leading-none text-ikea tabular sm:text-[34px]">24h</p>
                   <p className="mt-2 text-[12.5px] leading-snug text-ink-soft">
                     {lang === "ar" ? "توصيل داخل طرابلس" : "Delivery inside Tripoli"}
                   </p>
                 </div>
-                <div className="rounded-[22px] border border-line bg-white p-5">
-                  <p className="font-display text-[34px] font-black leading-none text-ikea tabular">7</p>
+                <div className="rounded-[22px] border border-line bg-white p-4 sm:p-5">
+                  <p className="font-display text-[30px] font-black leading-none text-ikea tabular sm:text-[34px]">7</p>
                   <p className="mt-2 text-[12.5px] leading-snug text-ink-soft">
                     {lang === "ar" ? "أيام للاستبدال" : "Days to exchange"}
                   </p>

@@ -11,6 +11,19 @@ const __dirname = path.dirname(__filename);
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), viteSingleFile()],
+  server: {
+    host: "0.0.0.0",
+    port: 5173,
+    strictPort: true,
+    // Arena / E2B serves the dev server through a proxied preview host.
+    allowedHosts: [".e2b.app"],
+  },
+  preview: {
+    host: "0.0.0.0",
+    port: 4173,
+    strictPort: true,
+    allowedHosts: [".e2b.app"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

@@ -87,6 +87,23 @@ Un workflow **GitHub Actions** (`.github/workflows/ci.yml`) rejoue `npm install`
 
 ---
 
+## 📱 Version mobile & responsive
+
+Le site est pensé **mobile-first** et a été vérifié de **280 px** (Galaxy Fold, replié) à **430 px** (iPhone Pro Max), puis sur tablette et desktop :
+
+- **Aucun débordement horizontal** à toutes les largeurs testées (280 / 320 / 360 / 390 / 430 / 768 / 1024 / 1440 px).
+- **Encoches et barre de gestes** : `viewport-fit=cover`, zones sûres (`env(safe-area-inset-*)`) sur le header, le menu, le panier et les boutons flottants.
+- **Menu plein écran** : recherche intégrée, 8 sections, accès rapide aux rayons, sélecteur de langue, appel et WhatsApp — avec verrouillage du scroll de la page.
+- **Fiche produit** : bottom-sheet (image fixe, détails défilants, boutons d'achat toujours visibles) et « عرض سريع » toujours accessible au tactile (il n'était visible qu'au survol auparavant).
+- **Panier** : pleine hauteur `100dvh`, footer collant avec le bouton de commande, formulaire aux champs 16 px (évite le zoom automatique d'iOS).
+- **Champs de saisie** : `inputMode`/`autoComplete` adaptés ( téléphone, adresse, e-mail) et cibles tactiles agrandies.
+- **Numéros de téléphone** isolés en LTR (`unicode-bidi: isolate`) pour ne pas inverser les chiffres en arabe.
+- **Animations** : le bandeau défilant et la frise des origines utilisent une animation dédiée RTL (le contenu restait hors écran en arabe).
+
+> Le serveur de dev est configuré pour les previews Arena/E2B (`allowedHosts: [".e2b.app"]`) ; en local, `npm run dev` reste accessible sur `http://localhost:5173`.
+
+---
+
 ## 🛠 Personnaliser le contenu
 
 | Ce que vous voulez changer | Fichier |

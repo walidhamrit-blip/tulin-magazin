@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { STORIES, px, type Bi } from "../data/catalog";
 import { WHATSAPP_NUMBER } from "../i18n";
 import { useStore } from "../store";
@@ -6,6 +6,7 @@ import { SectionHead } from "./Bits";
 import { RailArrows, RailProgress, useRail } from "./Carousel";
 import { IconCheck, IconWhatsApp, IconX } from "./Icons";
 import Reveal from "./Reveal";
+import { useScrollLock } from "../utils/scrollLock";
 
 const STEPS: Bi[] = [
   { ar: "نختار المورد الأوروبي ونعاين العيّنة قبل الشراء.", en: "We pick the European supplier and inspect the sample before buying." },
@@ -19,8 +20,19 @@ export default function Stories() {
   const [openId, setOpenId] = useState<string | null>(null);
   const story = STORIES.find((s) => s.id === openId) ?? null;
 
+  useScrollLock(Boolean(story));
+
+  useEffect(() => {
+    if (!story) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenId(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [story]);
+
   return (
-    <section id="stories" className="relative scroll-mt-24 overflow-hidden bg-ink py-16 text-white lg:py-24">
+    <section id="stories" className="relative scroll-mt-24 overflow-hidden bg-ink py-14 text-white sm:py-16 lg:py-24">
       <div
         className="pointer-events-none absolute inset-0 opacity-60"
         style={{
@@ -48,7 +60,7 @@ export default function Stories() {
 
       <div
         ref={rail.ref}
-        className="no-bar snap-x-mand relative flex gap-4 overflow-x-auto scroll-smooth px-4 pb-2 sm:px-6 lg:px-10"
+        className="no-bar rail-x snap-x-mand relative flex gap-4 overflow-x-auto scroll-smooth px-4 pb-2 sm:px-6 lg:px-10"
       >
         {STORIES.map((s, i) => (
           <Reveal
@@ -97,7 +109,7 @@ export default function Stories() {
       {story && (
         <div className="fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-6">
           <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" onClick={() => setOpenId(null)} />
-          <div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-[26px] bg-white text-ink shadow-2xl sm:rounded-[26px]">
+          <div className="relative max-h-sheet w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-[26px] bg-white text-ink shadow-2xl sm:rounded-[26px]">
             <div className="relative aspect-[16/9] overflow-hidden sm:rounded-t-[26px]">
               <img src={px(story.img, 1100, 620)} alt={story.title[lang]} className="h-full w-full object-cover" />
               <span className="absolute inset-0 bg-gradient-to-t from-ink/85 to-transparent" />
@@ -108,7 +120,7 @@ export default function Stories() {
                 type="button"
                 onClick={() => setOpenId(null)}
                 aria-label={t("close")}
-                className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-ink transition-colors hover:bg-brick hover:text-white"
+                className="absolute end-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-ink shadow transition-colors hover:bg-brick hover:text-white"
               >
                 <IconX className="h-4.5 w-4.5" />
               </button>
@@ -116,7 +128,7 @@ export default function Stories() {
                 {story.title[lang]}
               </h3>
             </div>
-            <div className="p-5 sm:p-7">
+            <div className="p-5 pb-safe sm:p-7">
               <p className="text-[14.5px] leading-relaxed text-ink-soft">{story.text[lang]}</p>
               <ol className="mt-6 space-y-3">
                 {STEPS.map((s, i) => (

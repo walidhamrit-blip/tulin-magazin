@@ -16,7 +16,7 @@ export default function Rooms() {
   };
 
   return (
-    <section id="rooms" className="relative scroll-mt-24 py-16 lg:py-24">
+    <section id="rooms" className="relative scroll-mt-24 py-14 sm:py-16 lg:py-24">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <SectionHead
           kicker={lang === "ar" ? "أفكار وإلهام" : "Ideas & inspiration"}
@@ -35,7 +35,7 @@ export default function Rooms() {
 
       <div
         ref={rail.ref}
-        className="no-bar snap-x-mand flex gap-4 overflow-x-auto scroll-smooth px-4 pb-2 sm:px-6 lg:px-10"
+        className="no-bar rail-x snap-x-mand flex gap-4 overflow-x-auto scroll-smooth px-4 pb-2 sm:px-6 lg:px-10"
       >
         {ROOMS.map((r, i) => (
           <Reveal

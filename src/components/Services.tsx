@@ -17,8 +17,8 @@ export default function Services() {
   ];
 
   return (
-    <section id="services" className="relative scroll-mt-24 bg-white py-16 lg:py-24">
-      <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-14 lg:px-10">
+    <section id="services" className="relative scroll-mt-24 bg-white py-14 sm:py-16 lg:py-24">
+      <div className="mx-auto grid max-w-[1440px] gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-12 lg:gap-14 lg:px-10">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-32">
             <SectionHead
@@ -61,12 +61,12 @@ export default function Services() {
           <ul className="border-t border-line">
             {items.map((s, i) => (
               <Reveal as="li" key={s.t} delay={i * 60} className="border-b border-line">
-                <div className="group relative flex items-start gap-4 overflow-hidden px-1 py-6 transition-colors duration-400 sm:gap-7 sm:py-8">
+                <div className="group relative flex items-start gap-3 overflow-hidden px-1 py-5 transition-colors duration-400 sm:gap-7 sm:py-8">
                   <span className="absolute inset-0 -z-0 translate-y-full bg-ikea transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0" />
                   <span className="relative z-10 font-display text-[13px] font-black tabular text-ink-soft/45 transition-colors duration-400 group-hover:text-sun sm:text-[15px]">
                     0{i + 1}
                   </span>
-                  <span className="relative z-10 grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-line bg-mist text-ikea transition-all duration-400 group-hover:border-white/25 group-hover:bg-white/10 group-hover:text-sun">
+                  <span className="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-line bg-mist text-ikea transition-all duration-400 group-hover:border-white/25 group-hover:bg-white/10 group-hover:text-sun sm:h-12 sm:w-12">
                     {s.icon}
                   </span>
                   <span className="relative z-10 min-w-0 flex-1">

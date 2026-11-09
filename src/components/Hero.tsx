@@ -63,7 +63,7 @@ export default function Hero() {
         {lang === "ar" ? "تولين" : "TOLIN"}
       </span>
 
-      <div className="relative mx-auto grid max-w-[1440px] gap-10 px-4 pb-14 pt-12 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-10 lg:pb-20 lg:pt-16">
+      <div className="relative mx-auto grid max-w-[1440px] gap-12 px-4 pb-16 pt-10 sm:gap-10 sm:px-6 sm:pb-14 sm:pt-12 lg:grid-cols-12 lg:gap-8 lg:px-10 lg:pb-20 lg:pt-16">
         {/* copy */}
         <div className="lg:col-span-6 xl:col-span-6">
           <Reveal>
@@ -76,7 +76,7 @@ export default function Hero() {
           </Reveal>
 
           <Reveal delay={90}>
-            <h1 className="mt-6 font-display text-[clamp(2.6rem,7.6vw,5.4rem)] font-black leading-[0.95] tracking-tight">
+            <h1 className="mt-5 font-display text-[clamp(2.25rem,8.4vw,5.4rem)] font-black leading-[0.98] tracking-tight sm:mt-6">
               <span className="block text-white">{t("hero.title1")}</span>
               <span className="relative mt-1 block text-sun">
                 {t("hero.title2")}
@@ -97,7 +97,7 @@ export default function Hero() {
           </Reveal>
 
           <Reveal delay={230}>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-col items-stretch gap-2.5 min-[480px]:flex-row min-[480px]:items-stretch sm:mt-8 sm:gap-3">
               <a
                 href={waLink(
                   lang === "ar"
@@ -106,14 +106,14 @@ export default function Hero() {
                 )}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="group inline-flex items-center gap-2.5 rounded-full bg-sun px-6 py-3.5 font-display text-[15px] font-bold text-ink transition-all duration-300 hover:bg-white hover:shadow-[0_16px_40px_-14px_rgba(255,219,0,0.8)] active:scale-95"
+                className="group inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-sun px-6 py-3.5 font-display text-[15px] font-bold text-ink transition-all duration-300 hover:bg-white hover:shadow-[0_16px_40px_-14px_rgba(255,219,0,0.8)] active:scale-95"
               >
                 <IconWhatsApp className="h-5 w-5 text-leaf transition-transform duration-300 group-hover:scale-110" />
                 {t("hero.cta1")}
               </a>
               <a
                 href="#catalog"
-                className="group inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3.5 font-display text-[15px] font-bold text-white transition-all duration-300 hover:border-white hover:bg-white/10"
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-6 py-3.5 font-display text-[15px] font-bold text-white transition-all duration-300 hover:border-white hover:bg-white/10"
               >
                 {t("hero.cta2")}
                 <IconArrow className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180" />
@@ -149,7 +149,7 @@ export default function Hero() {
         {/* image collage */}
         <div className="relative lg:col-span-6 xl:col-span-6">
           <Reveal delay={140} className="relative">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] border border-white/10 sm:aspect-[16/13] lg:aspect-[4/4.35]">
+            <div className="relative aspect-[4/4.2] overflow-hidden rounded-[24px] border border-white/10 sm:aspect-[16/13] sm:rounded-[28px] lg:aspect-[4/4.35]">
               <img
                 src={px(HERO_IMG_A, 1200, 1300)}
                 alt={lang === "ar" ? "صالون أوروبي حديث" : "Modern European living room"}
@@ -189,13 +189,13 @@ export default function Hero() {
             />
 
             {/* rotating product card */}
-            <div className="absolute -bottom-6 start-2 w-[min(20rem,calc(100%-1rem))] rounded-2xl border border-white/12 bg-white p-3 text-ink shadow-[0_30px_60px_-24px_rgba(0,0,0,0.8)] sm:start-5">
-              <div className="flex gap-3">
+            <div className="absolute -bottom-7 start-1 end-1 rounded-2xl border border-white/12 bg-white p-3 text-ink shadow-[0_30px_60px_-24px_rgba(0,0,0,0.8)] min-[420px]:end-auto min-[420px]:w-[min(20rem,calc(100%-1rem))] sm:-bottom-6 sm:start-5">
+              <div className="flex gap-2.5 sm:gap-3">
                 <img
                   key={featured.id}
                   src={px(featured.img, 240, 240)}
                   alt={featured.name[lang]}
-                  className="h-20 w-20 shrink-0 animate-pop rounded-xl object-cover"
+                  className="h-16 w-16 shrink-0 animate-pop rounded-xl object-cover min-[420px]:h-20 min-[420px]:w-20"
                 />
                 <div className="min-w-0 flex-1">
                   <p className="font-display text-[10px] font-bold uppercase tracking-[0.16em] text-ikea">
@@ -215,7 +215,7 @@ export default function Hero() {
                     <button
                       type="button"
                       onClick={() => add(featured.id)}
-                      className="inline-flex items-center gap-1 rounded-full bg-ikea px-3 py-1.5 text-[11.5px] font-bold text-white transition-colors hover:bg-ikea-deep active:scale-95"
+                      className="inline-flex shrink-0 items-center gap-1 rounded-full bg-ikea px-2.5 py-1.5 text-[11.5px] font-bold text-white transition-colors hover:bg-ikea-deep active:scale-95 sm:px-3"
                     >
                       <IconBag className="h-3.5 w-3.5" />
                       {lang === "ar" ? "أضف" : "Add"}
@@ -243,7 +243,7 @@ export default function Hero() {
 
       {/* bottom bar */}
       <div className="relative border-t border-white/10 bg-ink/60">
-        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-4 px-4 py-4 text-[12.5px] text-white/55 sm:px-6 lg:px-10">
+        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-4 py-4 text-[12.5px] text-white/55 sm:gap-4 sm:px-6 lg:px-10">
           <span className="inline-flex items-center gap-2">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-leaf opacity-75" />
@@ -258,7 +258,7 @@ export default function Hero() {
             className="link-sweep inline-flex items-center gap-2 font-semibold text-white/80 hover:text-sun"
           >
             <IconWhatsApp className="h-4 w-4" />
-            <span className="tabular">+{WHATSAPP_NUMBER}</span>
+            <span className="num-ltr">+{WHATSAPP_NUMBER}</span>
           </a>
           <span className="hidden items-center gap-2 md:inline-flex">
             {t("hero.scroll")}
